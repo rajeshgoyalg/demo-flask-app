@@ -22,6 +22,7 @@ jobs:
         run: |
           VERSION_TAG="v$(date +%Y%m%d)-$(git rev-parse --short HEAD)"
           echo "VERSION_TAG=$VERSION_TAG" >> $GITHUB_ENV
+          echo "VERSION_TAG=$VERSION_TAG" >> $GITHUB_OUTPUT  # Store as an output
           echo "Docker image version: $VERSION_TAG"
 
       - name: Log in to Docker Hub
@@ -55,8 +56,8 @@ jobs:
 
       - name: Push Changes to Helm Repo
         run: |
-          git config --global user.name "GitHub user name"
-          git config --global user.email "GitHub user email"
+          git config --global user.name "Rajesh Goyal"
+          git config --global user.email "rajeshgoyalg@gmail.com"
           git add demo-flask-app/values.yaml
           git commit -m "Update image tag to ${{ needs.build-test-push.outputs.IMAGE_TAG }}"
           git push origin main
