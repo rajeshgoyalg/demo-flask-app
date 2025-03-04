@@ -38,3 +38,25 @@ jobs:
         run: |
           docker push ${{ secrets.DOCKER_HUB_USERNAME }}/demo-flask-app:latest
           docker push ${{ secrets.DOCKER_HUB_USERNAME }}/demo-flask-app:${{ env.VERSION_TAG }}
+  
+  update-helm:
+    needs: build-test-push  # Ensures deployment happens after CI
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Helm Repository
+        uses: actions/checkout@v4
+        with:
+          repository: rajeshgoyalg/demo-helm-charts
+          token: ${{ secrets.GH_PAT }}
+
+      - name: Update Image Tag in values.yaml
+        run: |
+          sed -i "s|tag: .*|tag: ${{ needs.build-test-push.outputs.IMAGE_TAG }}|g" demo-flask-app/values.yaml
+
+      - name: Push Changes to Helm Repo
+        run: |
+          git config --global user.name "GitHub user name"
+          git config --global user.email "GitHub user email"
+          git add demo-flask-app/values.yaml
+          git commit -m "Update image tag to ${{ needs.build-test-push.outputs.IMAGE_TAG }}"
+          git push origin main
