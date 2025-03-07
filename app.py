@@ -3,7 +3,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def hello():
-    return "Hello from Flask running in a container! V4 - helm chart & argocd"
+    return "Hello from Flask running in a container! V5 - helm chart & argocd"
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=3000)
