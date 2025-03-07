@@ -66,6 +66,9 @@ jobs:
   deploy-ecs:
     needs: build-test-push  # Ensures this runs after CI
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write  # ✅ Required for OIDC authentication
+      contents: read
     steps:
       - name: Configure AWS CLI
         uses: aws-actions/configure-aws-credentials@v4
