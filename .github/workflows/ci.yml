@@ -86,19 +86,20 @@ jobs:
       #       '.containerDefinitions[0].image=$IMAGE_TAG' task-definition.json > new-task-definition.json
 
       - name: Update ECS Task Definition with New Image
+        id: task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
           task-definition: task-definition.json
           container-name: demo-flask-app
           image: "rajeshgoyalg/demo-flask-app:${{ needs.build-test-push.outputs.IMAGE_TAG }}"
     
-      - name: List Files in Workspace (Debugging)
-        run: ls -l && cat new-task-definition.json  # ✅ Debugging step
+      # - name: List Files in Workspace (Debugging)
+      #   run: ls -l && cat new-task-definition.json  # ✅ Debugging step
 
       - name: Deploy to Amazon ECS
         uses: aws-actions/amazon-ecs-deploy-task-definition@v2
         with:
-          task-definition: new-task-definition.json
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
           service: demo-flask-service
           cluster: demo-devops-cluster
           wait-for-service-stability: true
