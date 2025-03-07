@@ -87,6 +87,7 @@ jobs:
 
       - name: Register Updated Task Definition
         run: |
+          cat new-task-definition.json
           TASK_DEF_ARN=$(aws ecs register-task-definition --cli-input-json new-task-definition.json --query "taskDefinition.taskDefinitionArn" --output text)
           echo "TASK_DEF_ARN=$TASK_DEF_ARN" >> $GITHUB_ENV
 
