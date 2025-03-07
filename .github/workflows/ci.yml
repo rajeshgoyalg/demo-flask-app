@@ -80,10 +80,17 @@ jobs:
         run: |
           aws ecs describe-task-definition --task-definition demo-flask-app-task --query "taskDefinition" > task-definition.json
 
+      # - name: Update ECS Task Definition with New Image
+      #   run: |
+      #     jq --arg IMAGE_TAG "rajeshgoyalg/demo-flask-app:${{ needs.build-test-push.outputs.IMAGE_TAG }}" \
+      #       '.containerDefinitions[0].image=$IMAGE_TAG' task-definition.json > new-task-definition.json
+
       - name: Update ECS Task Definition with New Image
-        run: |
-          jq --arg IMAGE_TAG "rajeshgoyalg/demo-flask-app:${{ needs.build-test-push.outputs.IMAGE_TAG }}" \
-            '.containerDefinitions[0].image=$IMAGE_TAG' task-definition.json > new-task-definition.json
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: task-definition.json
+          container-name: demo-flask-app
+          image: "rajeshgoyalg/demo-flask-app:${{ needs.build-test-push.outputs.IMAGE_TAG }}"
     
       - name: List Files in Workspace (Debugging)
         run: ls -l && cat new-task-definition.json  # ✅ Debugging step
@@ -95,12 +102,3 @@ jobs:
           service: demo-flask-service
           cluster: demo-devops-cluster
           wait-for-service-stability: true
-      
-      # - name: Register Updated Task Definition
-      #   run: |
-      #     TASK_DEF_ARN=$(aws ecs register-task-definition --cli-input-json new-task-definition.json --query "taskDefinition.taskDefinitionArn" --output text)
-      #     echo "TASK_DEF_ARN=$TASK_DEF_ARN" >> $GITHUB_ENV
-
-      # - name: Update ECS Service
-      #   run: |
-      #     aws ecs update-service --cluster demo-devops-cluster --service demo-flask-app-service --task-definition $TASK_DEF_ARN
