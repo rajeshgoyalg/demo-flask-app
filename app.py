@@ -6,7 +6,7 @@ def hello():
     return "Hello from Flask running in a container - ECS CI / CD test - V1"
 
 @app.route('/flask')
-def hello():
+def hello_eks():
     return "Hello from Flask running in EKS"
 
 if __name__ == "__main__":
