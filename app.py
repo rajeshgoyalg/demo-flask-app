@@ -5,5 +5,9 @@ app = Flask(__name__)
 def hello():
     return "Hello from Flask running in a container - ECS CI / CD test - V1"
 
+@app.route('/flask')
+def hello():
+    return "Hello from Flask running in EKS"
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=3000)
