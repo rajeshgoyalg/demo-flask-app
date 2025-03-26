@@ -13,5 +13,9 @@ def hello_eks():
 def healthy():
     return "Service is healthy"
 
+@app.route('/argocd')
+def argocd():
+    return "Application changes are synced using ArgoCD"
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=3000)
