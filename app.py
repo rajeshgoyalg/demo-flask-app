@@ -9,5 +9,9 @@ def hello():
 def hello_eks():
     return "Hello from Flask running in EKS"
 
+@app.route('/health-check')
+def healthy():
+    return "Service is healthy"
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=3000)
