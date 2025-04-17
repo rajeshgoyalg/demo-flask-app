@@ -9,7 +9,7 @@ def hello():
 def hello_eks():
     return "Hello from Flask running in EKS"
 
-@app.route('/health-check')
+@app.route('/health')
 def healthy():
     return "Service is healthy"
 
